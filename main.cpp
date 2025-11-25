@@ -56,6 +56,24 @@ public:
     void setInaltime(int h) { *inaltime = h; }
     static void setNrCopaci(int v) { nrCopaci = v; }
 
+    bool operator==(const Copac& c) const {
+        return nume == c.nume && *inaltime == *c.inaltime;
+    }
+
+    bool operator<(const Copac& c) const {
+        return *inaltime < *c.inaltime;
+    }
+
+    Copac operator+(int delta) const {
+        Copac rez(nume, id, *inaltime + delta);
+        return rez;
+    }
+
+    Copac& operator+=(int delta) {
+        *inaltime = *inaltime + delta;
+        return *this;
+    }
+
     friend void comparaCopaci(const Copac& c1, const Copac& c2);
 };
 
@@ -114,6 +132,19 @@ public:
     void setMaterial(const string& m) { material = m; }
     void setNrLocuri(int l) { *nrLocuri = l; }
     static void setNrBanci(int v) { nrBanci = v; }
+
+    bool operator==(const Banca& b) const {
+        return material == b.material && *nrLocuri == *b.nrLocuri;
+    }
+
+    bool operator<(const Banca& b) const {
+        return *nrLocuri < *b.nrLocuri;
+    }
+
+    Banca& operator+=(int deltaLocuri) {
+        *nrLocuri = *nrLocuri + deltaLocuri;
+        return *this;
+    }
 };
 
 int Banca::nrBanci = 0;
@@ -172,6 +203,24 @@ public:
     void setLungime(int l) { *lungime = l; }
     static void setNrAlei(int v) { nrAlei = v; }
 
+    bool operator==(const Alee& a) const {
+        return nume == a.nume && *lungime == *a.lungime;
+    }
+
+    bool operator<(const Alee& a) const {
+        return *lungime < *a.lungime;
+    }
+
+    Alee operator+(int delta) const {
+        Alee rez(nume, id, *lungime + delta);
+        return rez;
+    }
+
+    Alee& operator+=(int delta) {
+        *lungime = *lungime + delta;
+        return *this;
+    }
+
     friend void lungireAlee(Alee& a, int delta);
 };
 
@@ -192,7 +241,7 @@ void lungireAlee(Alee& a, int delta) {
 }
 
 int main() {
-    cout << "Test parc - Faza 2\n\n";
+    cout << "Test parc - Faza 2 cu operatori\n\n";
 
     Copac c1;
     Copac c2("Stejar");
@@ -204,11 +253,14 @@ int main() {
     c3.afisare();
     c4.afisare();
 
-    c1.setNume("Tei Mare");
-    c1.setInaltime(310);
+    if (c2 == c4) cout << "c2 si c4 sunt egali\n";
+    if (c2 < c3) cout << "c2 este mai mic (mai scund) decat c3\n";
 
-    cout << c1.getNume() << " are inaltimea " << c1.getInaltime() << " cm.\n";
-    Copac::infoStatica();
+    Copac c5 = c2 + 30;
+    c5.afisare();
+
+    c2 += 15;
+    c2.afisare();
 
     comparaCopaci(c2, c3);
 
@@ -222,11 +274,11 @@ int main() {
     b3.afisare();
     b4.afisare();
 
-    b2.setMaterial("Metal Vopsit");
-    b2.setNrLocuri(6);
+    if (b1 == b4) cout << "b1 si b4 sunt egale\n";
+    if (b3 < b2) cout << "b3 are mai putine locuri decat b2\n";
 
-    cout << b2.getMaterial() << " cu " << b2.getNrLocuri() << " locuri.\n";
-    Banca::infoStatica();
+    b3 += 2;
+    b3.afisare();
 
     Alee a1;
     Alee a2("Aleea Copiilor");
@@ -238,13 +290,17 @@ int main() {
     a3.afisare();
     a4.afisare();
 
-    a3.setNume("Aleea Lac Mare");
-    a3.setLungime(300);
+    if (a3 == a4) cout << "a3 si a4 sunt egale\n";
+    if (a2 < a3) cout << "a2 este mai scurta decat a3\n";
 
-    cout << a3.getNume() << " are lungimea de " << a3.getLungime() << " m.\n";
-    Alee::infoStatica();
+    Alee a5 = a2 + 40;
+    a5.afisare();
+
+    a2 += 10;
+    a2.afisare();
 
     lungireAlee(a2, 20);
 
+    cout << "\nSfarsit test.\n";
     return 0;
 }
