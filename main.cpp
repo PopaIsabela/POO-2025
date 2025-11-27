@@ -34,6 +34,17 @@ public:
         nrCopaci++;
     }
 
+    Copac& operator=(const Copac& c) {
+        if (this != &c) {
+            nume = c.nume;
+            if (inaltime != nullptr) {
+                delete inaltime;
+            }
+            inaltime = new int(*c.inaltime);
+        }
+        return *this;
+    }
+
     ~Copac() {
         delete inaltime;
         nrCopaci--;
@@ -44,7 +55,7 @@ public:
     }
 
     static void infoStatica() {
-        cout << "In parc sunt " << nrCopaci << " copaci (construiti momentan).\n";
+        cout << "In parc sunt " << nrCopaci << " copaci.\n";
     }
 
     string getNume() const { return nume; }
@@ -111,6 +122,17 @@ public:
         nrBanci++;
     }
 
+    Banca& operator=(const Banca& b) {
+        if (this != &b) {
+            material = b.material;
+            if (nrLocuri != nullptr) {
+                delete nrLocuri;
+            }
+            nrLocuri = new int(*b.nrLocuri);
+        }
+        return *this;
+    }
+
     ~Banca() {
         delete nrLocuri;
         nrBanci--;
@@ -121,7 +143,7 @@ public:
     }
 
     static void infoStatica() {
-        cout << "In parc sunt " << nrBanci << " banci (construite momentan).\n";
+        cout << "In parc sunt " << nrBanci << " banci.\n";
     }
 
     string getMaterial() const { return material; }
@@ -139,6 +161,11 @@ public:
 
     bool operator<(const Banca& b) const {
         return *nrLocuri < *b.nrLocuri;
+    }
+
+    Banca operator+(int deltaLocuri) const {
+        Banca rez(material, id, *nrLocuri + deltaLocuri);
+        return rez;
     }
 
     Banca& operator+=(int deltaLocuri) {
@@ -181,6 +208,17 @@ public:
         nrAlei++;
     }
 
+    Alee& operator=(const Alee& a) {
+        if (this != &a) {
+            nume = a.nume;
+            if (lungime != nullptr) {
+                delete lungime;
+            }
+            lungime = new int(*a.lungime);
+        }
+        return *this;
+    }
+
     ~Alee() {
         delete lungime;
         nrAlei--;
@@ -191,7 +229,7 @@ public:
     }
 
     static void infoStatica() {
-        cout << "In parc sunt " << nrAlei << " alei (construite momentan).\n";
+        cout << "In parc sunt " << nrAlei << " alei.\n";
     }
 
     string getNume() const { return nume; }
@@ -241,7 +279,7 @@ void lungireAlee(Alee& a, int delta) {
 }
 
 int main() {
-    cout << "Test parc - Faza 2 cu operatori\n\n";
+    cout << "Test parc\n\n";
 
     Copac c1;
     Copac c2("Stejar");
@@ -254,7 +292,7 @@ int main() {
     c4.afisare();
 
     if (c2 == c4) cout << "c2 si c4 sunt egali\n";
-    if (c2 < c3) cout << "c2 este mai mic (mai scund) decat c3\n";
+    if (c2 < c3) cout << "c2 este mai scund decat c3\n";
 
     Copac c5 = c2 + 30;
     c5.afisare();
@@ -262,8 +300,13 @@ int main() {
     c2 += 15;
     c2.afisare();
 
+    Copac c6("Brad", 12, 350);
+    c6 = c3;
+    c6.afisare();
+
     comparaCopaci(c2, c3);
 
+    cout << "\nBanci:\n";
     Banca b1;
     Banca b2("Metal");
     Banca b3("Plastic", 5, 2);
@@ -277,9 +320,16 @@ int main() {
     if (b1 == b4) cout << "b1 si b4 sunt egale\n";
     if (b3 < b2) cout << "b3 are mai putine locuri decat b2\n";
 
+    Banca b5 = b2 + 3;
+    b5.afisare();
+
     b3 += 2;
     b3.afisare();
 
+    b4 = b3;
+    b4.afisare();
+
+    cout << "\nAlei:\n";
     Alee a1;
     Alee a2("Aleea Copiilor");
     Alee a3("Aleea Lac", 7, 250);
@@ -298,6 +348,9 @@ int main() {
 
     a2 += 10;
     a2.afisare();
+
+    a4 = a1;
+    a4.afisare();
 
     lungireAlee(a2, 20);
 
