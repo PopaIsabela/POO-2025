@@ -54,6 +54,10 @@ public:
         cout << "Copac: " << nume << ", id = " << id << ", inaltime = " << *inaltime << " cm\n";
     }
 
+    void descriere() {
+        cout << "Descriere copac: " << nume << " are inaltimea de " << *inaltime << " cm\n";
+    }
+
     static void infoStatica() {
         cout << "In parc sunt " << nrCopaci << " copaci.\n";
     }
@@ -142,6 +146,10 @@ public:
         cout << "Banca: " << material << ", id = " << id << ", locuri = " << *nrLocuri << "\n";
     }
 
+    void infoMaterial() {
+        cout << "Material banca: " << material << "\n";
+    }
+
     static void infoStatica() {
         cout << "In parc sunt " << nrBanci << " banci.\n";
     }
@@ -228,6 +236,10 @@ public:
         cout << "Alee: " << nume << ", id = " << id << ", lungime = " << *lungime << " m\n";
     }
 
+    void infoLungime() {
+        cout << "Lungimea aleii: " << *lungime << " m\n";
+    }
+
     static void infoStatica() {
         cout << "In parc sunt " << nrAlei << " alei.\n";
     }
@@ -291,6 +303,8 @@ int main() {
     c3.afisare();
     c4.afisare();
 
+    c1.descriere();
+
     if (c2 == c4) cout << "c2 si c4 sunt egali\n";
     if (c2 < c3) cout << "c2 este mai scund decat c3\n";
 
@@ -317,6 +331,8 @@ int main() {
     b3.afisare();
     b4.afisare();
 
+    b1.infoMaterial();
+
     if (b1 == b4) cout << "b1 si b4 sunt egale\n";
     if (b3 < b2) cout << "b3 are mai putine locuri decat b2\n";
 
@@ -339,6 +355,8 @@ int main() {
     a2.afisare();
     a3.afisare();
     a4.afisare();
+
+    a1.infoLungime();
 
     if (a3 == a4) cout << "a3 si a4 sunt egale\n";
     if (a2 < a3) cout << "a2 este mai scurta decat a3\n";
