@@ -89,6 +89,17 @@ public:
         return *this;
     }
 
+    void citire() {
+        string n;
+        int h;
+        cout << "Nume copac: ";
+        cin >> n;
+        cout << "Inaltime copac: ";
+        cin >> h;
+        setNume(n);
+        setInaltime(h);
+    }
+
     friend void comparaCopaci(const Copac& c1, const Copac& c2);
 };
 
@@ -180,6 +191,17 @@ public:
         *nrLocuri = *nrLocuri + deltaLocuri;
         return *this;
     }
+
+    void citire() {
+        string m;
+        int l;
+        cout << "Material banca: ";
+        cin >> m;
+        cout << "Numar locuri: ";
+        cin >> l;
+        setMaterial(m);
+        setNrLocuri(l);
+    }
 };
 
 int Banca::nrBanci = 0;
@@ -269,6 +291,17 @@ public:
     Alee& operator+=(int delta) {
         *lungime = *lungime + delta;
         return *this;
+    }
+
+    void citire() {
+        string n;
+        int l;
+        cout << "Nume alee: ";
+        cin >> n;
+        cout << "Lungime alee: ";
+        cin >> l;
+        setNume(n);
+        setLungime(l);
     }
 
     friend void lungireAlee(Alee& a, int delta);
@@ -371,6 +404,66 @@ int main() {
     a4.afisare();
 
     lungireAlee(a2, 20);
+
+    const int NR_COPACI_V = 2;
+    const int NR_BANCI_V = 2;
+    const int NR_ALEI_V = 2;
+
+    Copac vectorCopaci[NR_COPACI_V];
+    Banca vectorBanci[NR_BANCI_V];
+    Alee vectorAlei[NR_ALEI_V];
+
+    cout << "\nVector copaci (citire):\n";
+    for (int i = 0; i < NR_COPACI_V; i++) {
+        cout << "Copac " << i + 1 << ":\n";
+        vectorCopaci[i].citire();
+    }
+
+    cout << "\nVector copaci (afisare):\n";
+    for (int i = 0; i < NR_COPACI_V; i++) {
+        vectorCopaci[i].afisare();
+    }
+
+    cout << "\nVector banci (citire):\n";
+    for (int i = 0; i < NR_BANCI_V; i++) {
+        cout << "Banca " << i + 1 << ":\n";
+        vectorBanci[i].citire();
+    }
+
+    cout << "\nVector banci (afisare):\n";
+    for (int i = 0; i < NR_BANCI_V; i++) {
+        vectorBanci[i].afisare();
+    }
+
+    cout << "\nVector alei (citire):\n";
+    for (int i = 0; i < NR_ALEI_V; i++) {
+        cout << "Alee " << i + 1 << ":\n";
+        vectorAlei[i].citire();
+    }
+
+    cout << "\nVector alei (afisare):\n";
+    for (int i = 0; i < NR_ALEI_V; i++) {
+        vectorAlei[i].afisare();
+    }
+
+    const int LINII = 2;
+    const int COLOANE = 2;
+    Alee matriceAlei[LINII][COLOANE];
+
+    cout << "\nMatrice de alei (citire):\n";
+    for (int i = 0; i < LINII; i++) {
+        for (int j = 0; j < COLOANE; j++) {
+            cout << "Alee [" << i << "][" << j << "]:\n";
+            matriceAlei[i][j].citire();
+        }
+    }
+
+    cout << "\nMatrice de alei (afisare):\n";
+    for (int i = 0; i < LINII; i++) {
+        for (int j = 0; j < COLOANE; j++) {
+            matriceAlei[i][j].afisare();
+        }
+    }
 
     cout << "\nSfarsit test.\n";
     return 0;
