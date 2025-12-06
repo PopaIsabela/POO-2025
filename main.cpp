@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 
 class Copac {
@@ -98,6 +99,43 @@ public:
         cin >> h;
         setNume(n);
         setInaltime(h);
+    }
+
+    void scrieText(ofstream& out) const {
+        out << nume << " " << *inaltime << "\n";
+    }
+
+    void citesteText(ifstream& in) {
+        string n;
+        int h;
+        in >> n >> h;
+        if (in) {
+            setNume(n);
+            setInaltime(h);
+        }
+    }
+
+    void scrieBinar(ofstream& out) const {
+        int lung = (int)nume.size();
+        out.write((char*)&lung, sizeof(lung));
+        out.write(nume.c_str(), lung);
+        int h = *inaltime;
+        out.write((char*)&h, sizeof(h));
+    }
+
+    void citesteBinar(ifstream& in) {
+        int lung = 0;
+        in.read((char*)&lung, sizeof(lung));
+        if (!in) return;
+        string n;
+        n.resize(lung);
+        in.read(&n[0], lung);
+        int h = 0;
+        in.read((char*)&h, sizeof(h));
+        if (in) {
+            setNume(n);
+            setInaltime(h);
+        }
     }
 
     friend void comparaCopaci(const Copac& c1, const Copac& c2);
@@ -202,6 +240,43 @@ public:
         setMaterial(m);
         setNrLocuri(l);
     }
+
+    void scrieText(ofstream& out) const {
+        out << material << " " << *nrLocuri << "\n";
+    }
+
+    void citesteText(ifstream& in) {
+        string m;
+        int l;
+        in >> m >> l;
+        if (in) {
+            setMaterial(m);
+            setNrLocuri(l);
+        }
+    }
+
+    void scrieBinar(ofstream& out) const {
+        int lung = (int)material.size();
+        out.write((char*)&lung, sizeof(lung));
+        out.write(material.c_str(), lung);
+        int l = *nrLocuri;
+        out.write((char*)&l, sizeof(l));
+    }
+
+    void citesteBinar(ifstream& in) {
+        int lung = 0;
+        in.read((char*)&lung, sizeof(lung));
+        if (!in) return;
+        string m;
+        m.resize(lung);
+        in.read(&m[0], lung);
+        int l = 0;
+        in.read((char*)&l, sizeof(l));
+        if (in) {
+            setMaterial(m);
+            setNrLocuri(l);
+        }
+    }
 };
 
 int Banca::nrBanci = 0;
@@ -304,83 +379,33 @@ public:
         setLungime(l);
     }
 
+    void scrieBinar(ofstream& out) const {
+        int lung = (int)nume.size();
+        out.write((char*)&lung, sizeof(lung));
+        out.write(nume.c_str(), lung);
+        int l = *lungime;
+        out.write((char*)&l, sizeof(l));
+    }
+
+    void citesteBinar(ifstream& in) {
+        int lung = 0;
+        in.read((char*)&lung, sizeof(lung));
+        if (!in) return;
+        string n;
+        n.resize(lung);
+        in.read(&n[0], lung);
+        int l = 0;
+        in.read((char*)&l, sizeof(l));
+        if (in) {
+            setNume(n);
+            setLungime(l);
+        }
+    }
+
     friend void lungireAlee(Alee& a, int delta);
 };
 
 int Alee::nrAlei = 0;
-
-class ZonaParc {
-private:
-    string numeZona;
-    Copac copacPrincipal;
-    int nrBanciZona;
-    int nrAleiZona;
-
-public:
-    ZonaParc() : copacPrincipal() {
-        numeZona = "Zona standard";
-        nrBanciZona = 0;
-        nrAleiZona = 0;
-    }
-
-    ZonaParc(string nume, const Copac& c, int nrBanci, int nrAlei) : copacPrincipal(c) {
-        numeZona = nume;
-        nrBanciZona = nrBanci;
-        nrAleiZona = nrAlei;
-    }
-
-    ZonaParc(const ZonaParc& z) : copacPrincipal(z.copacPrincipal) {
-        numeZona = z.numeZona;
-        nrBanciZona = z.nrBanciZona;
-        nrAleiZona = z.nrAleiZona;
-    }
-
-    ZonaParc& operator=(const ZonaParc& z) {
-        if (this != &z) {
-            numeZona = z.numeZona;
-            copacPrincipal = z.copacPrincipal;
-            nrBanciZona = z.nrBanciZona;
-            nrAleiZona = z.nrAleiZona;
-        }
-        return *this;
-    }
-
-    string getNumeZona() const { return numeZona; }
-    Copac getCopacPrincipal() const { return copacPrincipal; }
-    int getNrBanciZona() const { return nrBanciZona; }
-    int getNrAleiZona() const { return nrAleiZona; }
-
-    void setNumeZona(const string& n) { numeZona = n; }
-    void setCopacPrincipal(const Copac& c) { copacPrincipal = c; }
-    void setNrBanciZona(int x) { nrBanciZona = x; }
-    void setNrAleiZona(int x) { nrAleiZona = x; }
-
-    bool operator==(const ZonaParc& z) const {
-        return numeZona == z.numeZona &&
-               nrBanciZona == z.nrBanciZona &&
-               nrAleiZona == z.nrAleiZona &&
-               copacPrincipal.getNume() == z.copacPrincipal.getNume();
-    }
-
-    bool operator<(const ZonaParc& z) const {
-        int totalThis = nrBanciZona + nrAleiZona;
-        int totalAlt = z.nrBanciZona + z.nrAleiZona;
-        return totalThis < totalAlt;
-    }
-
-    ZonaParc& operator+=(int deltaBanci) {
-        nrBanciZona = nrBanciZona + deltaBanci;
-        return *this;
-    }
-
-    void afisareZona() {
-        cout << "Zona parc: " << numeZona
-             << ", banci: " << nrBanciZona
-             << ", alei: " << nrAleiZona
-             << ", copac principal: ";
-        copacPrincipal.afisare();
-    }
-};
 
 void comparaCopaci(const Copac& c1, const Copac& c2) {
     if (*c1.inaltime > *c2.inaltime)
@@ -538,25 +563,85 @@ int main() {
         }
     }
 
-    cout << "\nZone parc:\n";
-    ZonaParc z1;
-    ZonaParc z2("Zona Copaci Mari", c3, 3, 2);
-    ZonaParc z3("Zona mica", c1, 1, 1);
+    ofstream foutCopaci("copaci.txt");
+    if (foutCopaci.is_open()) {
+        for (int i = 0; i < NR_COPACI_V; i++) {
+            vectorCopaci[i].scrieText(foutCopaci);
+        }
+        foutCopaci.close();
+    }
 
-    z1.afisareZona();
-    z2.afisareZona();
-    z3.afisareZona();
+    ofstream foutBanci("banci.txt");
+    if (foutBanci.is_open()) {
+        for (int i = 0; i < NR_BANCI_V; i++) {
+            vectorBanci[i].scrieText(foutBanci);
+        }
+        foutBanci.close();
+    }
 
-    if (z1 < z2) cout << "z1 are mai putine obiecte decat z2\n";
-    if (z3 < z2) cout << "z3 are mai putine obiecte decat z2\n";
+    ifstream finCopaci("copaci.txt");
+    if (finCopaci.is_open()) {
+        Copac cText1;
+        Copac cText2;
+        cText1.citesteText(finCopaci);
+        cText2.citesteText(finCopaci);
+        cout << "\nCopaci cititi din fisier text:\n";
+        cText1.afisare();
+        cText2.afisare();
+        finCopaci.close();
+    }
 
-    z1 = z2;
-    z1.afisareZona();
+    ifstream finBanci("banci.txt");
+    if (finBanci.is_open()) {
+        Banca bText1;
+        Banca bText2;
+        bText1.citesteText(finBanci);
+        bText2.citesteText(finBanci);
+        cout << "\nBanci citite din fisier text:\n";
+        bText1.afisare();
+        bText2.afisare();
+        finBanci.close();
+    }
 
-    if (z1 == z2) cout << "z1 si z2 sunt egale ca zona\n";
+    ofstream fBinCopaci("copaci.bin", ios::binary);
+    if (fBinCopaci.is_open()) {
+        for (int i = 0; i < NR_COPACI_V; i++) {
+            vectorCopaci[i].scrieBinar(fBinCopaci);
+        }
+        fBinCopaci.close();
+    }
 
-    z2 += 2;
-    z2.afisareZona();
+    ifstream fBinCopaciIn("copaci.bin", ios::binary);
+    if (fBinCopaciIn.is_open()) {
+        Copac cb1;
+        Copac cb2;
+        cb1.citesteBinar(fBinCopaciIn);
+        cb2.citesteBinar(fBinCopaciIn);
+        cout << "\nCopaci cititi din fisier binar:\n";
+        cb1.afisare();
+        cb2.afisare();
+        fBinCopaciIn.close();
+    }
+
+    ofstream fBinAlei("alei.bin", ios::binary);
+    if (fBinAlei.is_open()) {
+        for (int i = 0; i < NR_ALEI_V; i++) {
+            vectorAlei[i].scrieBinar(fBinAlei);
+        }
+        fBinAlei.close();
+    }
+
+    ifstream fBinAleiIn("alei.bin", ios::binary);
+    if (fBinAleiIn.is_open()) {
+        Alee ab1;
+        Alee ab2;
+        ab1.citesteBinar(fBinAleiIn);
+        ab2.citesteBinar(fBinAleiIn);
+        cout << "\nAlei citite din fisier binar:\n";
+        ab1.afisare();
+        ab2.afisare();
+        fBinAleiIn.close();
+    }
 
     cout << "\nSfarsit test.\n";
     return 0;
