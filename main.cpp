@@ -643,6 +643,26 @@ int main() {
         fBinAleiIn.close();
     }
 
+    ofstream fBinBanci("banci.bin", ios::binary);
+    if (fBinBanci.is_open()) {
+        for (int i = 0; i < NR_BANCI_V; i++) {
+            vectorBanci[i].scrieBinar(fBinBanci);
+        }
+        fBinBanci.close();
+    }
+
+    ifstream fBinBanciIn("banci.bin", ios::binary);
+    if (fBinBanciIn.is_open()) {
+        Banca bb1;
+        Banca bb2;
+        bb1.citesteBinar(fBinBanciIn);
+        bb2.citesteBinar(fBinBanciIn);
+        cout << "\nBanci citite din fisier binar:\n";
+        bb1.afisare();
+        bb2.afisare();
+        fBinBanciIn.close();
+    }
+
     cout << "\nSfarsit test.\n";
     return 0;
 }
