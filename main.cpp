@@ -421,6 +421,61 @@ void lungireAlee(Alee& a, int delta) {
     cout << "Noua lungime a aleii este " << *a.lungime << " m.\n";
 }
 
+int totalInaltimeCopaci(Copac* v, int n) {
+    int suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += v[i].getInaltime();
+    }
+    return suma;
+}
+
+int totalLocuriBanci(Banca* v, int n) {
+    int suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += v[i].getNrLocuri();
+    }
+    return suma;
+}
+
+int totalLungimeAlei(Alee* v, int n) {
+    int suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += v[i].getLungime();
+    }
+    return suma;
+}
+
+void salveazaRezumatText(Copac* vC, int nC, Banca* vB, int nB, Alee* vA, int nA) {
+    ofstream out("rezumat_parc.txt");
+    if (!out.is_open()) {
+        return;
+    }
+    out << "Rezumat parc\n";
+    out << "Numar copaci in vector: " << nC << "\n";
+    out << "Numar banci in vector: " << nB << "\n";
+    out << "Numar alei in vector: " << nA << "\n";
+    int sumaCopaci = totalInaltimeCopaci(vC, nC);
+    int sumaLocuri = totalLocuriBanci(vB, nB);
+    int sumaLungimi = totalLungimeAlei(vA, nA);
+    out << "Total inaltime copaci: " << sumaCopaci << "\n";
+    out << "Total locuri banci: " << sumaLocuri << "\n";
+    out << "Total lungime alei: " << sumaLungimi << "\n";
+    out.close();
+}
+
+void citesteRezumatText() {
+    ifstream in("rezumat_parc.txt");
+    if (!in.is_open()) {
+        return;
+    }
+    string linie;
+    cout << "\nRezumat parc din fisier:\n";
+    while (getline(in, linie)) {
+        cout << linie << "\n";
+    }
+    in.close();
+}
+
 int main() {
     cout << "Test parc\n\n";
 
@@ -643,25 +698,17 @@ int main() {
         fBinAleiIn.close();
     }
 
-    ofstream fBinBanci("banci.bin", ios::binary);
-    if (fBinBanci.is_open()) {
-        for (int i = 0; i < NR_BANCI_V; i++) {
-            vectorBanci[i].scrieBinar(fBinBanci);
-        }
-        fBinBanci.close();
-    }
+    int sumaCopaci = totalInaltimeCopaci(vectorCopaci, NR_COPACI_V);
+    int sumaLocuri = totalLocuriBanci(vectorBanci, NR_BANCI_V);
+    int sumaLungimi = totalLungimeAlei(vectorAlei, NR_ALEI_V);
 
-    ifstream fBinBanciIn("banci.bin", ios::binary);
-    if (fBinBanciIn.is_open()) {
-        Banca bb1;
-        Banca bb2;
-        bb1.citesteBinar(fBinBanciIn);
-        bb2.citesteBinar(fBinBanciIn);
-        cout << "\nBanci citite din fisier binar:\n";
-        bb1.afisare();
-        bb2.afisare();
-        fBinBanciIn.close();
-    }
+    cout << "\nStatistici simple:\n";
+    cout << "Total inaltime copaci din vector: " << sumaCopaci << " cm\n";
+    cout << "Total locuri la banci din vector: " << sumaLocuri << "\n";
+    cout << "Total lungime alei din vector: " << sumaLungimi << " m\n";
+
+    salveazaRezumatText(vectorCopaci, NR_COPACI_V, vectorBanci, NR_BANCI_V, vectorAlei, NR_ALEI_V);
+    citesteRezumatText();
 
     cout << "\nSfarsit test.\n";
     return 0;
