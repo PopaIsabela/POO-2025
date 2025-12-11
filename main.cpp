@@ -379,6 +379,20 @@ public:
         setLungime(l);
     }
 
+    void scrieText(ofstream& out) const {
+        out << nume << " " << *lungime << "\n";
+    }
+
+    void citesteText(ifstream& in) {
+        string n;
+        int l;
+        in >> n >> l;
+        if (in) {
+            setNume(n);
+            setLungime(l);
+        }
+    }
+
     void scrieBinar(ofstream& out) const {
         int lung = (int)nume.size();
         out.write((char*)&lung, sizeof(lung));
@@ -407,6 +421,78 @@ public:
 
 int Alee::nrAlei = 0;
 
+// Faza 7 - clase derivate
+
+class CopacFructifer : public Copac {
+private:
+    string tipFruct;
+    int anPlantare;
+
+public:
+    CopacFructifer() : Copac(), tipFruct("mar"), anPlantare(2020) {}
+
+    CopacFructifer(string nume, int idCopac, int inaltimeCopac, string tip, int an)
+        : Copac(nume, idCopac, inaltimeCopac), tipFruct(tip), anPlantare(an) {}
+
+    CopacFructifer(const CopacFructifer& cf)
+        : Copac(cf), tipFruct(cf.tipFruct), anPlantare(cf.anPlantare) {}
+
+    CopacFructifer& operator=(const CopacFructifer& cf) {
+        if (this != &cf) {
+            Copac::operator=(cf);
+            tipFruct = cf.tipFruct;
+            anPlantare = cf.anPlantare;
+        }
+        return *this;
+    }
+
+    string getTipFruct() const { return tipFruct; }
+    int getAnPlantare() const { return anPlantare; }
+
+    void setTipFruct(const string& t) { tipFruct = t; }
+    void setAnPlantare(int a) { anPlantare = a; }
+
+    void afisareFruct() {
+        afisare();
+        cout << "Tip fruct: " << tipFruct << ", an plantare: " << anPlantare << "\n";
+    }
+};
+
+class BancaSmart : public Banca {
+private:
+    bool arePrizaUSB;
+    string zona;
+
+public:
+    BancaSmart() : Banca(), arePrizaUSB(false), zona("standard") {}
+
+    BancaSmart(string material, int idBanca, int locuri, bool priza, string zonaBanca)
+        : Banca(material, idBanca, locuri), arePrizaUSB(priza), zona(zonaBanca) {}
+
+    BancaSmart(const BancaSmart& bs)
+        : Banca(bs), arePrizaUSB(bs.arePrizaUSB), zona(bs.zona) {}
+
+    BancaSmart& operator=(const BancaSmart& bs) {
+        if (this != &bs) {
+            Banca::operator=(bs);
+            arePrizaUSB = bs.arePrizaUSB;
+            zona = bs.zona;
+        }
+        return *this;
+    }
+
+    bool getArePrizaUSB() const { return arePrizaUSB; }
+    string getZona() const { return zona; }
+
+    void setArePrizaUSB(bool v) { arePrizaUSB = v; }
+    void setZona(const string& z) { zona = z; }
+
+    void afisareDetaliata() {
+        afisare();
+        cout << "Zona banca: " << zona << ", priza USB: " << (arePrizaUSB ? "da" : "nu") << "\n";
+    }
+};
+
 void comparaCopaci(const Copac& c1, const Copac& c2) {
     if (*c1.inaltime > *c2.inaltime)
         cout << c1.nume << " este mai inalt decat " << c2.nume << ".\n";
@@ -419,61 +505,6 @@ void comparaCopaci(const Copac& c1, const Copac& c2) {
 void lungireAlee(Alee& a, int delta) {
     *a.lungime = *a.lungime + delta;
     cout << "Noua lungime a aleii este " << *a.lungime << " m.\n";
-}
-
-int totalInaltimeCopaci(Copac* v, int n) {
-    int suma = 0;
-    for (int i = 0; i < n; i++) {
-        suma += v[i].getInaltime();
-    }
-    return suma;
-}
-
-int totalLocuriBanci(Banca* v, int n) {
-    int suma = 0;
-    for (int i = 0; i < n; i++) {
-        suma += v[i].getNrLocuri();
-    }
-    return suma;
-}
-
-int totalLungimeAlei(Alee* v, int n) {
-    int suma = 0;
-    for (int i = 0; i < n; i++) {
-        suma += v[i].getLungime();
-    }
-    return suma;
-}
-
-void salveazaRezumatText(Copac* vC, int nC, Banca* vB, int nB, Alee* vA, int nA) {
-    ofstream out("rezumat_parc.txt");
-    if (!out.is_open()) {
-        return;
-    }
-    out << "Rezumat parc\n";
-    out << "Numar copaci in vector: " << nC << "\n";
-    out << "Numar banci in vector: " << nB << "\n";
-    out << "Numar alei in vector: " << nA << "\n";
-    int sumaCopaci = totalInaltimeCopaci(vC, nC);
-    int sumaLocuri = totalLocuriBanci(vB, nB);
-    int sumaLungimi = totalLungimeAlei(vA, nA);
-    out << "Total inaltime copaci: " << sumaCopaci << "\n";
-    out << "Total locuri banci: " << sumaLocuri << "\n";
-    out << "Total lungime alei: " << sumaLungimi << "\n";
-    out.close();
-}
-
-void citesteRezumatText() {
-    ifstream in("rezumat_parc.txt");
-    if (!in.is_open()) {
-        return;
-    }
-    string linie;
-    cout << "\nRezumat parc din fisier:\n";
-    while (getline(in, linie)) {
-        cout << linie << "\n";
-    }
-    in.close();
 }
 
 int main() {
@@ -634,6 +665,14 @@ int main() {
         foutBanci.close();
     }
 
+    ofstream foutAlei("alei.txt");
+    if (foutAlei.is_open()) {
+        for (int i = 0; i < NR_ALEI_V; i++) {
+            vectorAlei[i].scrieText(foutAlei);
+        }
+        foutAlei.close();
+    }
+
     ifstream finCopaci("copaci.txt");
     if (finCopaci.is_open()) {
         Copac cText1;
@@ -656,6 +695,18 @@ int main() {
         bText1.afisare();
         bText2.afisare();
         finBanci.close();
+    }
+
+    ifstream finAlei("alei.txt");
+    if (finAlei.is_open()) {
+        Alee aText1;
+        Alee aText2;
+        aText1.citesteText(finAlei);
+        aText2.citesteText(finAlei);
+        cout << "\nAlei citite din fisier text:\n";
+        aText1.afisare();
+        aText2.afisare();
+        finAlei.close();
     }
 
     ofstream fBinCopaci("copaci.bin", ios::binary);
@@ -698,17 +749,48 @@ int main() {
         fBinAleiIn.close();
     }
 
-    int sumaCopaci = totalInaltimeCopaci(vectorCopaci, NR_COPACI_V);
-    int sumaLocuri = totalLocuriBanci(vectorBanci, NR_BANCI_V);
-    int sumaLungimi = totalLungimeAlei(vectorAlei, NR_ALEI_V);
+    cout << "\nClase derivate si upcasting:\n";
 
-    cout << "\nStatistici simple:\n";
-    cout << "Total inaltime copaci din vector: " << sumaCopaci << " cm\n";
-    cout << "Total locuri la banci din vector: " << sumaLocuri << "\n";
-    cout << "Total lungime alei din vector: " << sumaLungimi << " m\n";
+    CopacFructifer cf1;
+    CopacFructifer cf2("Mar Golden", 20, 260, "mar", 2018);
+    cf1.afisareFruct();
+    cf2.afisareFruct();
 
-    salveazaRezumatText(vectorCopaci, NR_COPACI_V, vectorBanci, NR_BANCI_V, vectorAlei, NR_ALEI_V);
-    citesteRezumatText();
+    Copac* pCopac = &cf2;
+    cout << "Upcasting copac fructifer la copac:\n";
+    pCopac->afisare();
+
+    BancaSmart bs1;
+    BancaSmart bs2("Metal", 30, 6, true, "zona copii");
+    bs1.afisareDetaliata();
+    bs2.afisareDetaliata();
+
+    Banca& refBanca = bs2;
+    cout << "Upcasting banca smart la banca:\n";
+    refBanca.afisare();
+
+    int totalInaltime = 0;
+    for (int i = 0; i < NR_COPACI_V; i++) {
+        totalInaltime += vectorCopaci[i].getInaltime();
+    }
+
+    int totalLocuri = 0;
+    for (int i = 0; i < NR_BANCI_V; i++) {
+        totalLocuri += vectorBanci[i].getNrLocuri();
+    }
+
+    int totalLungime = 0;
+    for (int i = 0; i < NR_ALEI_V; i++) {
+        totalLungime += vectorAlei[i].getLungime();
+    }
+
+    ofstream rez("rezumat_parc.txt");
+    if (rez.is_open()) {
+        rez << "Total inaltime copaci: " << totalInaltime << "\n";
+        rez << "Total locuri banci: " << totalLocuri << "\n";
+        rez << "Total lungime alei: " << totalLungime << "\n";
+        rez.close();
+    }
 
     cout << "\nSfarsit test.\n";
     return 0;
